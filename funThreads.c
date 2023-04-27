@@ -367,11 +367,11 @@ void *controllore(void *arg) {
     printf("Thread gestore svegliato dal segnale %d\n",s);
     if(s==SIGINT) {
       fprintf(stderr, 
-              "Ce stanno %d stringhe nell'HashMap\n",
+              "\nCe stanno %d stringhe nell'HashMap\n\n",
               *(a->numEntry));
     } else if (s==SIGTERM) {
       fprintf(stdout, 
-        "Ce stanno %d stringhe nell'HashMap\n",
+        "\nCe stanno %d stringhe nell'HashMap\n\n",
         *(a->numEntry));
 
       //FACCIO LA JOIN DEL CAPO DEI THREAD LETTORI
