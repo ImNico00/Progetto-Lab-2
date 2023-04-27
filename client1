@@ -1,0 +1,41 @@
+#! /usr/bin/env python3
+# server che fornisce l'elenco dei primi in un dato intervallo 
+# gestisce più clienti contemporaneamente usando i thread
+# invia il byte inutile all'inizio della connessione
+import struct, socket, argparse, os.path
+
+# host e porta di default
+HOST = "127.0.0.1"  # Standard loopback interface address (localhost)
+PORT = 57447  # Port to listen on (non-privileged ports are > 1023)
+Description ="""Client tipo A"""
+
+def main(file, host, port):
+  # inizializzazione socket client 
+  with open(file, "r") as f:
+    for line in f:
+      with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s: 
+        s.connect((host, port))
+        # la prossima chiamata è blocking 
+        print("Connesso a", s.getpeername())
+        s.sendall(struct.pack("!2i", 1, len(line)))
+        s.sendall(line.encode())
+        print("finito")
+        s.shutdown(socket.SHUT_RDWR)
+
+# questo codice viene eseguito solo se il file è eseguito direttamente
+# e non importato come modulo con import da un altro file
+if __name__ == '__main__':
+  # parsing della linea di comando vedere la guida
+  #    https://docs.python.org/3/howto/argparse.html
+  parser = argparse.ArgumentParser(description=Description, 
+                                   formatter_class=argparse.RawTextHelpFormatter)
+  parser.add_argument('file', help="file da utilizzare")
+  parser.add_argument("-a", help='host address', type = str, 
+                      default=HOST)  
+  parser.add_argument("-p", help='port', type = int, 
+                      default=PORT) 
+  args = parser.parse_args()
+  
+  #Controllo in primis se il file esiste
+  assert os.path.exists(args.file), "File inesistente"
+  main(args.file, args.a, args.p)

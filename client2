@@ -1,0 +1,64 @@
+#! /usr/bin/env python3
+# server che fornisce l'elenco dei primi in un dato intervallo 
+# gestisce più clienti contemporaneamente usando i thread
+# invia il byte inutile all'inizio della connessione
+import struct, socket, concurrent.futures, argparse, os.path
+
+# host e porta di default
+HOST = "127.0.0.1"  # Standard loopback interface address (localhost)
+PORT = 57447  # Port to listen on (non-privileged ports are > 1023)
+Description ="""Client tipo B"""
+Max_sequence_length = 2048
+
+def main(file, host, port):
+  numParole = 0
+  with open(file, "r") as f:
+    lineaNonInviata = ""
+    while True:
+      sequenzaInviata = 0
+      # inizializzazione socket client 
+      with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s: 
+        # la prossima chiamata è blocking 
+        s.connect((host, port))
+        print("Connesso a", s.getpeername())
+        s.sendall(struct.pack("!2i", 2, 2))
+        if lineaNonInviata != "":
+          numParole += 1
+          s.sendall(lineaNonInviata.encode())
+          sequenzaInviata = sequenzaInviata + len(lineaNonInviata)
+        while True:
+          line = f.readline()
+          if line:
+            if len(line) + sequenzaInviata < Max_sequence_length:
+              numParole += 1
+              s.sendall(line.encode())
+              sequenzaInviata = sequenzaInviata + len(line)
+            else:
+              lineaNonInviata = line
+              break
+          else:
+            print(numParole)
+            s.sendall(0)
+            break
+        s.shutdown(socket.SHUT_RDWR)
+
+# questo codice viene eseguito solo se il file è eseguito direttamente
+# e non importato come modulo con import da un altro file
+if __name__ == '__main__':
+  # parsing della linea di comando vedere la guida
+  #    https://docs.python.org/3/howto/argparse.html
+  parser = argparse.ArgumentParser(description=Description, 
+                                   formatter_class=argparse.RawTextHelpFormatter)
+  parser.add_argument('files', help="files da utilizzare", 
+                      nargs='+', default=[])
+  parser.add_argument("-a", help='host address', type = str, 
+                      default=HOST)  
+  parser.add_argument("-p", help='port', type = int, 
+                      default=PORT) 
+  args = parser.parse_args()
+
+  with concurrent.futures.ProcessPoolExecutor(max_workers=len(args.files)) as executor:
+    #Controllo in primis se il file esiste
+    for file in args.files: 
+      assert os.path.exists(file), "File inesistente"
+      executor.submit(main, file, args.a, args.p)
