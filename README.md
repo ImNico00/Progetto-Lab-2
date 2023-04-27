@@ -63,4 +63,5 @@ In questo file è possibile utilizzare 3 funzioni bash:
 
 
 Creazione cartella in maniera semplificata con make
+
 ```git clone git@github.com:ImNico00/Progetto-Lab-2.git testdir && find testdir -name "*" -exec chmod +x {} \; && cd testdir && make```
