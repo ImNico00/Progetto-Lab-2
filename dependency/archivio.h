@@ -27,12 +27,18 @@ typedef struct {
   char **Buffer;
   int *numEntry;
   int *indexThreads;
+  pthread_cond_t *condLettoriScrittori; // PER AGEVOLARE LETTORI
+  pthread_mutex_t *mutexLettoriScrittori; // PER AGEVOLARE LETTORI
+  int *numLettori; // PER AGEVOLARE LETTORI
 } aggiungi_t;
 
 typedef struct {
   int *numEntry;
   int numThreads;
   pthread_t *arrayThreads;
+  pthread_cond_t *condLettoriScrittori; // PER AGEVOLARE LETTORI
+  pthread_mutex_t *mutexLettoriScrittori; // PER AGEVOLARE LETTORI
+  int *numLettori; // PER AGEVOLARE LETTORI
 } capoAggiungi_t;
 
 typedef struct {
@@ -44,11 +50,17 @@ typedef struct {
   char **Buffer;
   int *indexThreads;
   FILE *file;
+  pthread_cond_t *condLettoriScrittori; // PER AGEVOLARE LETTORI
+  pthread_mutex_t *mutexLettoriScrittori; // PER AGEVOLARE LETTORI
+  int *numLettori; // PER AGEVOLARE LETTORI
 } conta_t;
 
 typedef struct {
   int numThreads;
   pthread_t *arrayThreads;
+  pthread_cond_t *condLettoriScrittori; // PER AGEVOLARE LETTORI
+  pthread_mutex_t *mutexLettoriScrittori; // PER AGEVOLARE LETTORI
+  int *numLettori; // PER AGEVOLARE LETTORI
 } capoConta_t;
 
 typedef struct {

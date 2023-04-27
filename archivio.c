@@ -22,7 +22,11 @@ int main(int argc, char* argv[]) {
   capoAggiungi_t CapoAggiungi; //STRUCT PER CAPO AGGIUNGI / SCRITTORI
   capoConta_t CapoConta; //STRUCT PER CAPO CONTA / LETTORI
   controlla_t c; // STRUCT PER CONTROLLORE
-  int entryHash = 0;
+  int entryHash = 0,
+      numLettori = 0;
+
+  pthread_mutex_t mutexLettoriScrittori = PTHREAD_MUTEX_INITIALIZER;
+  pthread_cond_t condLettoriScrittori = PTHREAD_COND_INITIALIZER;
 
   c.numEntry = &entryHash;
   c.continua = true;
@@ -38,11 +42,17 @@ int main(int argc, char* argv[]) {
   CapoAggiungi.numEntry = &entryHash;
   CapoAggiungi.numThreads = w;
   CapoAggiungi.arrayThreads = tAggiungi;
+  CapoAggiungi.condLettoriScrittori = &condLettoriScrittori;
+  CapoAggiungi.mutexLettoriScrittori = &mutexLettoriScrittori;
+  CapoAggiungi.numLettori = &numLettori;
   xpthread_create(&tAggiungi[0],NULL,&capoScrittori,&CapoAggiungi,QUI);
 
   //CAPO LETTORI
   CapoConta.numThreads = r;
   CapoConta.arrayThreads = tConta;
+  CapoConta.condLettoriScrittori = &condLettoriScrittori;
+  CapoConta.mutexLettoriScrittori = &mutexLettoriScrittori;
+  CapoConta.numLettori = &numLettori;
   xpthread_create(&tConta[0],NULL,&capoLettori,&CapoConta,QUI);
 
   do { // loop apparentemente senza uscita
@@ -54,6 +64,8 @@ int main(int argc, char* argv[]) {
   fprintf(stdout, "Il thread Controllore è stato terminato.\n");
 
   hdestroy();
+  xpthread_mutex_destroy(&mutexLettoriScrittori,QUI);
+  xpthread_cond_destroy(&condLettoriScrittori,QUI);
   free(mask);
   fprintf(stdout, "Ho terminato tutto con il thread main\n");
   return 0;

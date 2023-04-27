@@ -49,6 +49,9 @@ void *capoScrittori(void *arg) {
     arrAggiungi[i].numEntry = a->numEntry;
     arrAggiungi[i].condData = &dataSlots;
     arrAggiungi[i].indexThreads = &indexScrittori;
+    arrAggiungi[i].condLettoriScrittori = a->condLettoriScrittori;
+    arrAggiungi[i].mutexLettoriScrittori = a->mutexLettoriScrittori;
+    arrAggiungi[i].numLettori = a->numLettori;
     xpthread_create(&a->arrayThreads[i+1],NULL,&scrittori,i+arrAggiungi,QUI);
   }
 
@@ -152,6 +155,9 @@ void *capoLettori(void *arg) {
     arrConta[i].condData = &dataSlots;
     arrConta[i].indexThreads = &indexLettori;
     arrConta[i].file = f;
+    arrConta[i].condLettoriScrittori = a->condLettoriScrittori;
+    arrConta[i].mutexLettoriScrittori = a->mutexLettoriScrittori;
+    arrConta[i].numLettori = a->numLettori;
     xpthread_create(&a->arrayThreads[i+1],NULL,&lettori,i+arrConta,QUI);
   }
 
@@ -253,9 +259,14 @@ void *scrittori(void *arg) {
 
       break;
     }
+
     //fprintf(stdout, "[SCRITTORE] AGGIUNGO: %s\n", stringa);
     //DENTRO LA LOCK PERCHE' LA VARIABILE numEntry POTREBBE AVERE MODIFICHE INDESIDERATE
+
+    //CONTROLLO CHE NON CI SIANO LETTORI A LEGGERE
+    while (*(a->numLettori) > 0) xpthread_cond_wait(a->condLettoriScrittori, a->mutexLettoriScrittori,QUI);
     aggiungi(stringa, a->numEntry);
+
     //INCREMENTO L'INDEX PER I VARI THREADS
     *(a->indexThreads) += 1;
     xpthread_mutex_unlock(a->mutex,QUI);
@@ -317,7 +328,18 @@ void *lettori(void *arg) {
     xpthread_cond_signal(a->condFree,QUI);
     xpthread_mutex_unlock(a->mutexCond,QUI);
 
+    xpthread_mutex_lock(a->mutexLettoriScrittori,QUI);
+    *(a->numLettori) += 1;
+    xpthread_cond_broadcast(a->condLettoriScrittori,QUI);
+    xpthread_mutex_unlock(a->mutexLettoriScrittori,QUI);
+
     int n = conta(stringa);
+
+    xpthread_mutex_lock(a->mutexLettoriScrittori,QUI);
+    *(a->numLettori) -= 1;
+    xpthread_cond_broadcast(a->condLettoriScrittori,QUI);
+    xpthread_mutex_unlock(a->mutexLettoriScrittori,QUI);
+
     fprintf(a->file, "%s %d\n", stringa, n);
     free(stringa);
   }
