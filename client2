@@ -37,7 +37,6 @@ def main(file, host, port):
               lineaNonInviata = line
               break
           else:
-            print(numParole)
             s.sendall(0)
             break
         s.shutdown(socket.SHUT_RDWR)

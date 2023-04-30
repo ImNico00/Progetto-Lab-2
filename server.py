@@ -31,9 +31,9 @@ def main(nThread, nLettori, nScrittori, valgrind, host, port):
                           "./archivio", nLettori, nScrittori])
 
   print("Ho lanciato il processo:", p.pid)
-  print("Attendo 10 secondi (nel frattempo arriva l'output di archivio)")
+  print("Attendo 5 secondi (nel frattempo arriva l'output di archivio)")
   try:
-    time.sleep(10)
+    time.sleep(5)
   except KeyboardInterrupt:
     print("Attesa accorciata da SIGINT")
 
@@ -75,6 +75,7 @@ def main(nThread, nLettori, nScrittori, valgrind, host, port):
   os.unlink(PIPESCRITTORI)
   os.unlink(PIPELETTORI)
   fileLog.close()
+  print("[SERVER] PROGRAMMA TERMINATO!")
     
 
 # gestisci una singola connessione con un client

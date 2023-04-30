@@ -101,7 +101,6 @@ void *capoScrittori(void *arg) {
   //ATTENDO IL TERMINE DEI THREAD SCRITTORI
   for (int i = 1; i < nThreads; i++) { // parto da 1 perché lo 0 è il capo
     xpthread_join(a->arrayThreads[i], NULL, QUI);
-    printf("IL CAPO SCRITTORE HA ATTESO LA FINE DI: %d\n", i);
   }
 
   //NON SERVE FARE LA DESTROY DEI MUTEX E CONDVAR PERCHE' SONO ALLOCATI STATICAMENTE 
@@ -185,7 +184,7 @@ void *capoLettori(void *arg) {
       break;
     }
 
-    fprintf(stdout, "\nCAPO HA LETTO LA LUNGHEZZA: %d\n",letto);
+    //fprintf(stdout, "\nCAPO HA LETTO LA LUNGHEZZA: %d\n",letto);
     char *stringa = creaStringa(pipe, letto);
     char *token = strtok(stringa, ".,:; \n\r\t");
 
@@ -208,7 +207,6 @@ void *capoLettori(void *arg) {
   
   for (int i = 1; i < nThreads; i++) { // parto da 1 perché lo 0 è il capo
     xpthread_join(a->arrayThreads[i], NULL,QUI);
-    printf("IL CAPO LETTORE HA ATTESO LA FINE DI: %d\n", i);
   }
   
   //NON SERVE FARE LA DESTROY DEI MUTEX E CONDVAR PERCHE' SONO ALLOCATI STATICAMENTE 
@@ -279,7 +277,6 @@ void *scrittori(void *arg) {
     free(stringa);
     //fprintf(stdout, "SONO A: %d\n", *(a->indexThreads));
   }
-  fprintf(stdout, "Scrittore termina\n");
   return NULL;
 }
 /*
@@ -343,7 +340,6 @@ void *lettori(void *arg) {
     fprintf(a->file, "%s %d\n", stringa, n);
     free(stringa);
   }
-  fprintf(stdout, "Scrittore termina\n");
   return NULL;
 }
 /*
@@ -367,11 +363,11 @@ void *controllore(void *arg) {
     printf("Thread gestore svegliato dal segnale %d\n",s);
     if(s==SIGINT) {
       fprintf(stderr, 
-              "Ce stanno %d stringhe nell'HashMap\n",
+              "\nCe stanno %d stringhe nell'HashMap\n\n",
               *(a->numEntry));
     } else if (s==SIGTERM) {
       fprintf(stdout, 
-        "Ce stanno %d stringhe nell'HashMap\n",
+        "\nCe stanno %d stringhe nell'HashMap\n\n",
         *(a->numEntry));
 
       //FACCIO LA JOIN DEL CAPO DEI THREAD LETTORI

@@ -60,4 +60,7 @@ In questo file è possibile utilizzare 3 funzioni bash:
  - make -> Creazione dei files .o dei files .c presenti sopracitati ed eseguibile denominato "archivio"
  - clean -> Cancella tutto quello creato dalla funzione make ed in più tutto quello creato dall'eseguibile "archivio"
  - zip -> Creazione del file zip per gli elementi presenti nella cartella
- - execute -> Esegue i comandi richiesti nelle istruzioni
+
+
+Creazione cartella in maniera semplificata con make
+```git clone git@github.com:ImNico00/Progetto-Lab-2.git testdir && find testdir -name "*" -exec chmod +x {} \; && cd testdir && make```

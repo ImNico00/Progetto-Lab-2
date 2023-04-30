@@ -22,12 +22,3 @@ clean:
 # target che crea l'archivio dei sorgenti
 zip:
 	zip $(EXECS).zip makefile *.c *.h *.py *.md
-
-execute:
-	git clone git@github.com:ImNico00/Progetto-Lab-2.git testdir
-	cd testdir
-	make
-	./server.py 5 -r 2 -w 4 -v &
-	./client2 file1 file2
-	./client1 file3
-	pkill -INT -f server.py
