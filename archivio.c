@@ -18,7 +18,7 @@ int main(int argc, char* argv[]) {
   int w = atoi(argv[1]), //SCRITTORI USANO AGGIUNGI
       r = atoi(argv[2]); //LETTORI USANO CONTA
 
-  pthread_t tAggiungi[w], tConta[r], gestore; //ARRAY CON I THREADS
+  pthread_t tAggiungi[w+1], tConta[r+1], gestore; //ARRAY CON I THREADS
   capoAggiungi_t CapoAggiungi; //STRUCT PER CAPO AGGIUNGI / SCRITTORI
   capoConta_t CapoConta; //STRUCT PER CAPO CONTA / LETTORI
   controlla_t c; // STRUCT PER CONTROLLORE
