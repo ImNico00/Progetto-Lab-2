@@ -166,5 +166,5 @@ if __name__ == '__main__':
                       help='per attivare Valgrind', action='store_true') 
   args = parser.parse_args()
   assert args.threads > 0, "Il numero di thread deve essere maggiore di 0"
-  assert args.r > 1 and args.w > 1, "Il numero per ogni thread deve essere > 1"
+  assert args.r > 0 and args.w > 0, "Il numero per ogni thread deve essere > 0"
   main(args.threads, f"{args.r}", f"{args.w}", args.v, args.a, args.p)
