@@ -56,7 +56,7 @@ int main(int argc, char* argv[]) {
   xpthread_create(&tConta[0],NULL,&capoLettori,&CapoConta,QUI);
 
   do { // loop apparentemente senza uscita
-    sleep(10); 
+    sleep(5); 
     puts("Mi sono svegliato");
   } while(c.continua);
 
