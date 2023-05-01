@@ -37,10 +37,10 @@ void *capoScrittori(void *arg) {
                  dataSlots = PTHREAD_COND_INITIALIZER;
    
   char *bufScrittori[PC_buffer_len];
-  aggiungi_t arrAggiungi[nThreads-1]; //ARRAY DI STRUCT PER THREADS AGGIUNGI / SCRITTORI
+  aggiungi_t arrAggiungi[nThreads]; //ARRAY DI STRUCT PER THREADS AGGIUNGI / SCRITTORI
 
   //LANCIO GLI SCRITTORI
-  for (int i = 0; i < nThreads-1; i++) {
+  for (int i = 0; i < nThreads; i++) {
     arrAggiungi[i].freeSlots = &freeSlots;
     arrAggiungi[i].mutex = &mutex;
     arrAggiungi[i].mutexCond = &mutexCond;
@@ -63,7 +63,7 @@ void *capoScrittori(void *arg) {
 
     if (e != sizeof(int)) {
       fprintf(stdout, "LA PIPE SCRITTORI E' STATA CHIUSA!\n");
-      for (int i = 0; i < nThreads-1; i++) {
+      for (int i = 0; i < nThreads; i++) {
         
         xpthread_mutex_lock(&mutexCond,QUI);
         while (freeSlots == 0) xpthread_cond_wait(&condFreeSlots, &mutexCond,QUI);
@@ -99,8 +99,8 @@ void *capoScrittori(void *arg) {
   }
 
   //ATTENDO IL TERMINE DEI THREAD SCRITTORI
-  for (int i = 1; i < nThreads; i++) { // parto da 1 perché lo 0 è il capo
-    xpthread_join(a->arrayThreads[i], NULL, QUI);
+  for (int i = 0; i < nThreads; i++) { // parto da 1 perché lo 0 è il capo
+    xpthread_join(a->arrayThreads[i+1], NULL, QUI);
   }
 
   //NON SERVE FARE LA DESTROY DEI MUTEX E CONDVAR PERCHE' SONO ALLOCATI STATICAMENTE 
@@ -138,14 +138,14 @@ void *capoLettori(void *arg) {
   pthread_cond_t condFreeSlots = PTHREAD_COND_INITIALIZER,
                  dataSlots = PTHREAD_COND_INITIALIZER;
 
-  conta_t arrConta[nThreads-1]; //ARRAY DI STRUCT PER THREADS CONTA / LETTORI
+  conta_t arrConta[nThreads]; //ARRAY DI STRUCT PER THREADS CONTA / LETTORI
 
   char *bufLettori[PC_buffer_len];
   FILE *f = xfopen("lettori.log", "w",QUI);
   if (f == NULL) termina("Errore creazione file lettori.log");
 
   //LANCIO I LETTORI
-  for (int i = 0; i < nThreads-1; i++) {
+  for (int i = 0; i < nThreads; i++) {
     arrConta[i].freeSlots = &freeSlots;
     arrConta[i].mutexCond = &mutexCond;
     arrConta[i].mutex = &mutex;
@@ -169,7 +169,7 @@ void *capoLettori(void *arg) {
     
     if (e != sizeof(int)) {
       fprintf(stdout, "LA PIPE LETTORI E' STATA CHIUSA!\n");
-      for (int i = 0; i < nThreads-1; i++) {
+      for (int i = 0; i < nThreads; i++) {
 
         xpthread_mutex_lock(&mutexCond,QUI);
         while (freeSlots == 0) xpthread_cond_wait(&condFreeSlots, &mutexCond,QUI);
@@ -205,8 +205,8 @@ void *capoLettori(void *arg) {
     free(stringa);
   }
   
-  for (int i = 1; i < nThreads; i++) { // parto da 1 perché lo 0 è il capo
-    xpthread_join(a->arrayThreads[i], NULL,QUI);
+  for (int i = 0; i < nThreads; i++) { // parto da 1 perché lo 0 è il capo
+    xpthread_join(a->arrayThreads[i+1], NULL,QUI);
   }
   
   //NON SERVE FARE LA DESTROY DEI MUTEX E CONDVAR PERCHE' SONO ALLOCATI STATICAMENTE 
