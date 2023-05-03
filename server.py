@@ -107,7 +107,8 @@ def gestisci_connessione(conn, addr, pipeW, pipeR, lock):
       print("SERVER TIPO 1 - Ho scritto",len(data),"bytes")
       os.write(pipeR, data)
       lock.release()
-      logging.info(f"Scritti {len(data)} bytes nella pipe capolet")
+      logging.info(f"[LENGTH SEQUENZA] Scritti {len(len(data))} bytes nella pipe capolet")
+      logging.info(f"[SEQUENZA] Scritti {len(data)} bytes nella pipe capolet")
       #print("Finito di scrivere su pipe...")
     else:
       data = recv_all(conn, Max_sequence_length)
@@ -122,7 +123,8 @@ def gestisci_connessione(conn, addr, pipeW, pipeR, lock):
       print("SERVER TIPO 2 - Ho scritto", len(data),"bytes")
       os.write(pipeW, data)
       lock.release()
-      logging.info(f"Scritti {len(data)} bytes nella pipe caposc")
+      logging.info(f"[LENGTH SEQUENZA] Scritti {len(len(data))} bytes nella pipe caposc")
+      logging.info(f"[SEQUENZA] Scritti {len(data)} bytes nella pipe caposc")
       #print("Finito di scrivere su pipe...")
     
   #print(f"{threading.current_thread().name} finito con {addr}")
