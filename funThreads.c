@@ -262,8 +262,10 @@ void *scrittori(void *arg) {
     //DENTRO LA LOCK PERCHE' LA VARIABILE numEntry POTREBBE AVERE MODIFICHE INDESIDERATE
 
     //CONTROLLO CHE NON CI SIANO LETTORI A LEGGERE
+    xpthread_mutex_lock(a->mutexLettoriScrittori,QUI);
     while (*(a->numLettori) > 0) xpthread_cond_wait(a->condLettoriScrittori, a->mutexLettoriScrittori,QUI);
     aggiungi(stringa, a->numEntry);
+    xpthread_mutex_unlock(a->mutexLettoriScrittori,QUI);
 
     //INCREMENTO L'INDEX PER I VARI THREADS
     *(a->indexThreads) += 1;
