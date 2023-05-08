@@ -62,7 +62,7 @@ void *capoScrittori(void *arg) {
     ssize_t e = read(pipe, &letto, sizeof(int)); //leggo prima la len della stringa
 
     if (e != sizeof(int)) {
-      fprintf(stdout, "LA PIPE SCRITTORI E' STATA CHIUSA!\n");
+      printf("LA PIPE SCRITTORI E' STATA CHIUSA!\n");
       for (int i = 0; i < nThreads; i++) {
         
         xpthread_mutex_lock(&mutexCond,QUI);
@@ -168,7 +168,7 @@ void *capoLettori(void *arg) {
     ssize_t e = read(pipe, &letto, sizeof(int)); //leggo prima la len della stringa
     
     if (e != sizeof(int)) {
-      fprintf(stdout, "LA PIPE LETTORI E' STATA CHIUSA!\n");
+      printf("LA PIPE LETTORI E' STATA CHIUSA!\n");
       for (int i = 0; i < nThreads; i++) {
 
         xpthread_mutex_lock(&mutexCond,QUI);
@@ -359,17 +359,18 @@ void *lettori(void *arg) {
 void *controllore(void *arg) { 
   controlla_t *a = (controlla_t *) arg;
   int s;
+  printf("Pronto per la ricezione\n");
   while(true) {
     int e = sigwait(a->mask,&s);
     if(e != 0) perror("Errore sigwait");
     printf("Thread gestore svegliato dal segnale %d\n",s);
     if(s==SIGINT) {
       fprintf(stderr, 
-              "\nCe stanno %d stringhe nell'HashMap\n\n",
+              "\nCi sono %d stringhe nell'HashMap\n\n",
               *(a->numEntry));
     } else if (s==SIGTERM) {
       fprintf(stdout, 
-        "\nCe stanno %d stringhe nell'HashMap\n\n",
+        "\nCi sono %d stringhe nell'HashMap\n\n",
         *(a->numEntry));
 
       //FACCIO LA JOIN DEL CAPO DEI THREAD LETTORI

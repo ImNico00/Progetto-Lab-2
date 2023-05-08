@@ -19,7 +19,7 @@ def main(file, host, port):
         print("Connesso a", s.getpeername())
         s.sendall(struct.pack("!2i", 1, len(line)))
         s.sendall(line.encode())
-        print("finito")
+        print("Mandati", len(line), "bytes al server")
         s.shutdown(socket.SHUT_RDWR)
 
 # questo codice viene eseguito solo se il file è eseguito direttamente

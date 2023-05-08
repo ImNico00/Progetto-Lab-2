@@ -56,12 +56,11 @@ int main(int argc, char* argv[]) {
   xpthread_create(&tConta[0],NULL,&capoLettori,&CapoConta,QUI);
 
   do { // loop apparentemente senza uscita
-    sleep(5); 
-    puts("Mi sono svegliato");
+    sleep(5);
   } while(c.continua);
 
   xpthread_join(gestore, NULL, QUI); // JOIN GIUSTO PER TOGLIERE UN ERRORE DA VALGRIND
-  fprintf(stdout, "Il thread Controllore è stato terminato.\n");
+  printf("Il thread Controllore è stato terminato.\n");
 
   hdestroy();
   xpthread_mutex_destroy(&mutexLettoriScrittori,QUI);
