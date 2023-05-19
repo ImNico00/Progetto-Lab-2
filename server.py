@@ -96,6 +96,7 @@ def gestisci_connessione(conn, addr, pipeW, pipeR, lock):
     tipo = struct.unpack("!i",data[:4])[0] # 1 se tipo A - 2 se tipo B
     if tipo == 1:
       lenSequenza = struct.unpack("!i",data[4:])[0]
+      assert lenSequenza <= Max_sequence_length
       data = recv_all(conn,lenSequenza)
       #QUA DEVE ARRIVARE LA STRINGA DI LUNGHEZZA STABILITA
       assert len(data)==lenSequenza
