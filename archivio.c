@@ -60,13 +60,13 @@ int main(int argc, char* argv[]) {
   } while(c.continua);
 
   xpthread_join(gestore, NULL, QUI); // JOIN GIUSTO PER TOGLIERE UN ERRORE DA VALGRIND
-  printf("Il thread Controllore è stato terminato.\n");
+  //printf("Il thread Controllore è stato terminato.\n");
 
   hdestroy();
   xpthread_mutex_destroy(&mutexLettoriScrittori,QUI);
   xpthread_cond_destroy(&condLettoriScrittori,QUI);
   free(mask);
-  fprintf(stdout, "Ho terminato tutto con il thread main\n");
+  //fprintf(stdout, "Ho terminato tutto con il thread main\n");
   return 0;
 }
 
