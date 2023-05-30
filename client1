@@ -16,10 +16,10 @@ def main(file, host, port):
       with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s: 
         s.connect((host, port))
         # la prossima chiamata è blocking 
-        print("Connesso a", s.getpeername())
+        #print("Connesso a", s.getpeername())
         s.sendall(struct.pack("!2i", 1, len(line)))
         s.sendall(line.encode())
-        print("Mandati", len(line), "bytes al server")
+        #print("Mandati", len(line), "bytes al server")
         s.shutdown(socket.SHUT_RDWR)
 
 # questo codice viene eseguito solo se il file è eseguito direttamente
