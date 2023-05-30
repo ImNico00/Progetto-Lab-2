@@ -62,7 +62,7 @@ void *capoScrittori(void *arg) {
     ssize_t e = read(pipe, &letto, sizeof(int)); //leggo prima la len della stringa
 
     if (e != sizeof(int)) {
-      printf("LA PIPE SCRITTORI E' STATA CHIUSA!\n");
+      //printf("LA PIPE SCRITTORI E' STATA CHIUSA!\n");
       for (int i = 0; i < nThreads; i++) {
         
         xpthread_mutex_lock(&mutexCond,QUI);
@@ -110,7 +110,7 @@ void *capoScrittori(void *arg) {
   xpthread_cond_destroy(&condFreeSlots,QUI);
   xpthread_cond_destroy(&dataSlots,QUI);
   xclose(pipe,QUI);
-  printf("ER CAPO SCRITTORE HA FINITO\n");
+  //printf("ER CAPO SCRITTORE HA FINITO\n");
   return NULL;
 }
 /*
@@ -168,7 +168,7 @@ void *capoLettori(void *arg) {
     ssize_t e = read(pipe, &letto, sizeof(int)); //leggo prima la len della stringa
     
     if (e != sizeof(int)) {
-      printf("LA PIPE LETTORI E' STATA CHIUSA!\n");
+      //printf("LA PIPE LETTORI E' STATA CHIUSA!\n");
       for (int i = 0; i < nThreads; i++) {
 
         xpthread_mutex_lock(&mutexCond,QUI);
@@ -217,7 +217,7 @@ void *capoLettori(void *arg) {
   xpthread_cond_destroy(&dataSlots,QUI);
   fclose(f);
   xclose(pipe,QUI);
-  printf("ER CAPO LETTORE HA FINITO\n");
+  //printf("ER CAPO LETTORE HA FINITO\n");
   return NULL;
 }
 /*
@@ -359,11 +359,11 @@ void *lettori(void *arg) {
 void *controllore(void *arg) { 
   controlla_t *a = (controlla_t *) arg;
   int s;
-  printf("Pronto per la ricezione\n");
+  printf("Pronto per la ricezione\n"); //questo l'ho tenuta non tanto per il debug ma perché così sappiamo quando il programma è realmente pronto per il corretto funzionamento
   while(true) {
     int e = sigwait(a->mask,&s);
     if(e != 0) perror("Errore sigwait");
-    printf("Thread gestore svegliato dal segnale %d\n",s);
+    //printf("Thread gestore svegliato dal segnale %d\n",s);
     if(s==SIGINT) {
       fprintf(stderr, 
               "\nCi sono %d stringhe nell'HashMap\n\n",
@@ -375,14 +375,14 @@ void *controllore(void *arg) {
 
       //FACCIO LA JOIN DEL CAPO DEI THREAD LETTORI
       xpthread_join(*a->capoConta, NULL, QUI);
-      printf("I thread Lettori hanno finito.\n");
+      //printf("I thread Lettori hanno finito.\n");
 
       //FACCIO LA JOIN DEL CAPO DEI THREAD SCRITTORI
       xpthread_join(*a->capoAggiungi, NULL, QUI);
-      printf("I thread Scrittori hanno finito.\n");
+      //printf("I thread Scrittori hanno finito.\n");
 
       a->continua = false;
-      printf("\nSTO CHIUDENDO.\n\n");
+      //printf("\nSTO CHIUDENDO.\n\n");
       break;
     }
   }
