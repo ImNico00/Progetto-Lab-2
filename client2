@@ -20,7 +20,7 @@ def main(file, host, port):
       with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s: 
         # la prossima chiamata è blocking 
         s.connect((host, port))
-        #print("Connesso a", s.getpeername())
+        print("Connesso a", s.getpeername())
         s.sendall(struct.pack("!2i", 2, 2))
         if lineaNonInviata != "":
           numParole += 1
