@@ -30,7 +30,7 @@ def main(nThread, nLettori, nScrittori, valgrind, host, port):
                           "--log-file=valgrind-%p.log", 
                           "./archivio", nLettori, nScrittori])
 
-  print("Ho lanciato il processo:", p.pid)
+  #print("Ho lanciato il processo:", p.pid)
   print("Attendo 5 secondi (nel frattempo arriva l'output di archivio)")
   try:
     time.sleep(5)
@@ -61,8 +61,8 @@ def main(nThread, nLettori, nScrittori, valgrind, host, port):
           #gestisci_connessione(conn, addr, pipeW, pipeR)
     except KeyboardInterrupt:
       pass
-    print('Va bene smetto...')
-    print("Chiudo pipe...")
+    #print('Va bene smetto...')
+    #print("Chiudo pipe...")
     os.close(pipeW)
     os.close(pipeR)
     s.shutdown(socket.SHUT_RDWR)
@@ -70,8 +70,8 @@ def main(nThread, nLettori, nScrittori, valgrind, host, port):
     p.send_signal(signal.SIGTERM)
     time.sleep(10) # diamo il tempo al segnale di arrivare
     # ora p.poll() restituisce l'exit code di main
-    print("Exit code di main o None se non è terminato:", p.poll())
-  print("Cancello le pipes...")
+    #print("Exit code di main o None se non è terminato:", p.poll())
+  #print("Cancello le pipes...")
   os.unlink(PIPESCRITTORI)
   os.unlink(PIPELETTORI)
   fileLog.close()
@@ -106,7 +106,7 @@ def gestisci_connessione(conn, addr, pipeW, pipeR, lock):
       lock.acquire()
       byteLen = struct.pack("<i",len(data))
       os.write(pipeR, byteLen)
-      print("SERVER TIPO 1 - Ho scritto",len(data),"bytes")
+      #print("SERVER TIPO 1 - Ho scritto",len(data),"bytes")
       os.write(pipeR, data)
       lock.release()
       logging.info(f"Scritti {len(byteLen)} bytes per la lunghezza e {len(data)} bytes per la sequenza nella pipe capolet")
@@ -122,7 +122,7 @@ def gestisci_connessione(conn, addr, pipeW, pipeR, lock):
       lock.acquire()
       byteLen = struct.pack("<i",len(data))
       os.write(pipeW, byteLen)
-      print("SERVER TIPO 2 - Ho scritto", len(data),"bytes")
+      #print("SERVER TIPO 2 - Ho scritto", len(data),"bytes")
       os.write(pipeW, data)
       lock.release()
       logging.info(f"Scritti {len(byteLen)} bytes per la lunghezza e {len(data)} bytes per la sequenza nella pipe caposc")
